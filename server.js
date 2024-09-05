@@ -3,6 +3,7 @@ import Robot from './src/Robot.js';
 import Plateau from './src/Plateau.js';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -119,8 +120,26 @@ app.post('/api/mission', (req, res) => {
     });
 });
 
+
+const simulateAPICalls = async () => {
+    try {
+        const postResponse = await axios.post('http://localhost:3000/api/mission');
+        console.log('POST /api/mission response:', postResponse.data);
+
+        const missionId = 1;
+        const getResponse = await axios.get(`http://localhost:3000/api/mission/${missionId}`);
+        console.log(`GET /api/mission/${missionId} response:`, getResponse.data);
+
+    } catch (error) {
+        console.error('Error during API calls:', error.message);
+    }
+};
+
+// Start the server
 const port = 3000;
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+
+    await simulateAPICalls();
 });
 
